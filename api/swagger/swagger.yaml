@@ -1,0 +1,291 @@
+swagger: "2.0"
+info:
+  version: "0.0.1"
+  title: Hello World App
+# during dev, should point to your local machine
+host: localhost:3313
+# basePath prefixes all resource paths 
+basePath: /api/v1
+# 
+schemes:
+  # tip: remove http to make production-grade
+  - http
+  - https
+# format of bodies a client can send (Content-Type)
+consumes:
+  - application/json
+# format of the responses to the client (Accepts)
+produces:
+  - application/json
+  - text/html
+paths:
+  /items:
+    # binds a127 app logic to a route
+    x-swagger-router-controller: itemController
+    get:
+      description: Returns list of items
+      # used as the method name of the controller
+      operationId: getItemsList
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/ItemResponse"
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    post:
+      description: create new item
+      operationId: addItem
+      parameters:
+        - name: name
+          description: item properties
+          in: body
+          required: true
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/ItemRequest"
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/ItemResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /items/{id}:
+    x-swagger-router-controller: itemController
+    get:
+      description: Returns item
+      operationId: getItem
+      parameters:
+        - name: id
+          type: string
+          description: Item id
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/ItemResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    put:
+      description: update item
+      operationId: updateItem
+      parameters:
+        - name: id
+          type: string
+          description: Item id
+          in: path
+          required: true
+        - name: name
+          description: item properties
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/ItemRequest"
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/ItemResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    delete:
+      description: delete item
+      operationId: deleteItem
+      parameters:
+        - name: id
+          type: string
+          description: Item id
+          in: path
+          required: true
+        - name: name
+          description: item properties
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/ItemRequest"
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/ItemResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /categories:
+    x-swagger-router-controller: categoryController
+    get:
+      description: Returns list of categories
+      operationId: getCategoriesList
+      responses:
+        "200":
+          description: Success
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/CategoryResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    post:
+      description: create new category
+      operationId: addCategory
+      parameters:
+        - name: name
+          description: category properties
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/CategoryRequest"
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/CategoryResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /categories/{id}:
+    x-swagger-router-controller: categoryController
+    get:
+      description: Returns category
+      operationId: getCategory
+      parameters:
+        - name: id
+          type: string
+          description: Category id
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/CategoryResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    put:
+      description: update category
+      operationId: updateCategory
+      parameters:
+        - name: id
+          description: Category id
+          type: string
+          in: path
+          required: true
+        - name: name
+          description: category properties
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/CategoryRequest"
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/CategoryResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    delete:
+      description: delete category
+      operationId: deleteCategory
+      parameters:
+        - name: id
+          description: Category id
+          type: string
+          in: path
+          required: true
+        - name: name
+          description: category properties
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/CategoryRequest"
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/CategoryResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /swagger:
+    x-swagger-pipe: swagger_raw
+# complex objects have schema definitions
+definitions:
+  ErrorResponse:
+    description: error
+    type: string
+  ItemRequest:
+    required:
+      - title
+      - description
+      - categoryId
+    properties:
+      title:
+        type: string
+      description:
+        type: string
+      created:
+        type: string
+      categoryId:
+        type: string
+      categoryTitle:
+        type: string
+  ItemResponse:
+    properties:
+      title:
+        type: string
+      description:
+        type: string
+      created:
+        type: string
+      categoryId:
+        type: string
+      categoryTitle:
+        type: string
+      _id:
+        type: string
+      __v:
+        type: number
+  CategoryRequest:
+    required:
+      - title
+      - description
+    properties:
+      title:
+        type: string
+      description:
+        type: string
+  CategoryResponse:
+    properties:
+      title:
+        type: string
+      description:
+        type: string
+      created:
+        type: string
+      _id:
+        type: string
+      __v:
+        type: number
